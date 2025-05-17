@@ -1,3 +1,832 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:18a93472a5e0ffb4cd1c05d6d9cedc52a3c7ee5e3154917d9fe637e0347bc40d
-size 36745
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>7925 - 音乐站</title>
+    <style>
+        /* 全局样式 - 日式复古风格 */
+        body {
+            font-family: "MS Gothic", "SimSun", monospace;
+            background-color: #f8f4e6;
+            color: #4a3c2a;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-image:url(BG.jpg);
+            background-attachment:scroll;
+
+        }
+
+        /* 复古边框样式 */
+        .border-style {
+            border: 3px double #8B4513;
+            padding: 15px;
+            margin: 10px auto;
+            background-color: rgba(255, 248, 220, 0.85);
+            box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+            max-width: 900px;
+        }
+
+        /* 头部样式 */
+        header {
+            text-align: center;
+            padding: 20px 0;
+            background-color: rgba(139, 69, 19, 0.7);
+            border-bottom: 3px double #8B4513;
+            margin-bottom: 20px;
+        }
+
+        /* LOGO样式 */
+        .logo-container {
+            margin: 0 auto;
+            width: 133px;
+            height: 100px;
+            background-color: rgba(255, 248, 220, 0.8);
+            border: 2px solid #8B4513;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo {
+            max-width: 200px;
+            max-height: 100px;
+        }
+
+        /* 导航菜单 */
+        nav {
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        nav a {
+            color: #8B4513;
+            text-decoration: none;
+            padding: 8px 20px;
+            margin: 0 5px;
+            border: 1px solid #8B4513;
+            background-color: rgba(255, 248, 220, 0.7);
+            font-size: 0.95em;
+        }
+
+        nav a:hover {
+            background-color: #8B4513;
+            color: #FFF8DC;
+        }
+
+        /* 公告栏 */
+        .announcement {
+            background-color: rgba(255, 255, 240, 0.9);
+            border: 2px dashed #8B4513;
+            padding: 15px;
+            margin: 20px auto;
+        }
+
+        .announcement h2 {
+            border-bottom: 1px solid #8B4513;
+            padding-bottom: 8px;
+            color: #8B4513;
+            text-align: center;
+            font-size: 1.3em;
+            margin-top: 0;
+        }
+
+        /* 播放列表样式 */
+        #playlist-container {
+            background-color: rgba(255, 248, 220, 0.9);
+            border: 2px dashed #8B4513;
+        }
+
+        #playlist li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 8px;
+            background-color: rgba(255, 248, 220, 0.6);
+            border-left: 3px solid #8B4513;
+        }
+
+        .sort-input {
+            width: 50px;
+            padding: 3px;
+            border: 1px solid #8B4513;
+            border-radius: 3px;
+        }
+
+        .remove-btn {
+            background-color: #8B4513;
+            color: #FFF8DC;
+            border: none;
+            padding: 3px 8px;
+            cursor: pointer;
+        }
+
+        /* 专辑展示区 */
+        .album-section {
+            margin: 30px 0;
+        }
+
+        .album {
+            margin-bottom: 30px;
+        }
+
+        .album-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px dotted #8B4513;
+            padding-bottom: 10px;
+        }
+
+        .album-cover {
+            width: 120px;
+            height: 120px;
+            border: 2px solid #8B4513;
+            margin-right: 20px;
+            object-fit: cover;
+        }
+
+        .album-info {
+            flex: 1;
+        }
+
+        .album-title {
+            color: #8B4513;
+            margin: 0 0 5px 0;
+            font-size: 1.4em;
+        }
+
+        .album-meta {
+            color: #6b5a45;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+
+        /* 曲目列表 */
+        .track-list {
+            margin-left: 140px;
+        }
+
+        .track {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: rgba(255, 248, 220, 0.6);
+            border-left: 3px solid #8B4513;
+        }
+
+        .track-title {
+            font-weight: bold;
+            margin: 0 0 5px 0;
+            color: #5a4a32;
+        }
+
+        .player-container {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        audio {
+            flex: 1;
+            max-width: 100%;
+            height: 30px;
+        }
+
+        /* 下拉菜单样式 */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .dropdown-btn {
+            background-color: rgba(255, 248, 220, 0.7);
+            color: #8B4513;
+            border: 1px solid #8B4513;
+            padding: 2px 8px;
+            font-size: 0.85em;
+            cursor: pointer;
+            font-family: "MS Gothic", "SimSun", monospace;
+        }
+
+        .dropdown-btn:hover {
+            background-color: #8B4513;
+            color: #FFF8DC;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: relative;
+            background-color: rgba(255, 248, 220, 0.95);
+            min-width: 200px;
+            border: 1px solid #8B4513;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index:1;
+            max-height: 300px;
+            text-indent: 0;
+            overflow-y: auto;
+            padding: 10px;
+            color: #4a3c2a;
+            font-size: 0.9em;
+            line-height: 1.5;
+            white-space: pre-wrap;
+
+        }
+
+        /* 附录页 */
+        .appendix-content {
+            padding: 20px;
+            line-height: 1.8;
+        }
+
+        .appendix-content p {
+            margin: 15px 0;
+            text-indent: 2em;
+        }
+
+        /* 页脚 */
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: rgba(139, 69, 19, 0.7);
+            border-top: 3px double #8B4513;
+            margin-top: 40px;
+            color: #8e7437;
+            font-size: 0.9em;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .album-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .album-cover {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+
+            .track-list {
+                margin-left: 0;
+            }
+
+            .player-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .dropdown {
+                margin-left: 0;
+                margin-top: 5px;
+
+            }
+
+            nav a {
+                display: block;
+                margin: 5px auto;
+                width: 80%;
+                box-sizing: border-box;
+            }
+        }
+
+        /* 页面切换效果 */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* 复古装饰元素 */
+        .decoration {
+            text-align: center;
+            margin: 20px 0;
+            color: #8B4513;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <!-- 网站头部 -->
+    <header class="border-style">
+        <div class="logo-container">
+            <img src="logo.jpg" alt="网站LOGO" class="logo">
+        </div>
+        <h1>7925 - 音乐站</h1>
+    </header>
+
+    <!-- 导航菜单 -->
+    <nav class="border-style">
+        <a href="#" class="nav-link" data-page="home">首页</a>
+        <a href="#" class="nav-link" data-page="albums">专辑</a>
+        <a href="#" class="nav-link" data-page="appendix">附录</a>
+    </nav>
+
+    <!-- 首页内容 -->
+    <div id="home" class="page active">
+        <div class="border-style">
+            <!-- 公告栏 -->
+            <div class="announcement">
+                <h2>◆ 站内公告 ◆</h2>
+                <p>本网站由DeepSeek生成，由本人稍加改造。</p>
+                <p>2025.05.16更新：改变了附带文档的显示方式，</p>
+                <p>使用耳机聆听效果更佳</p>
+                <p>2025年5月3日 - 本站正式开放</p>
+            </div>
+
+            <div class="decoration">※※※</div>
+
+            <!-- 最新专辑预览 -->
+            <div class="album-section">
+                <h2 style="text-align: center; color: #8B4513;">◆ 最新专辑 ◆</h2>
+
+                <div class="album">
+                    <div class="album-header">
+                        <img src="普斯科夫城/普斯科夫城.jpg" alt="普斯科夫城" class="album-cover">
+                        <div class="album-info">
+                            <h3 class="album-title">普斯科夫城</h3>
+                            <div class="album-meta">发行日期：2025年5月3日</div>
+                            <div class="album-meta">完成情况：未完成</div>
+                            <div class="album-meta">曲目数量：5首</div>
+                            <div class="album-meta">宿主：库乐队</div>
+                        </div>
+                    </div>
+
+                    <div class="track-list">
+                        <div class="track">
+                            <h4 class="track-title">1. 律动</h4>
+                            <div class="player-container">
+                                <audio controls controlsList="nodownload">
+                                    <source src="普斯科夫城/律动.wav" type="audio/mpeg">
+                                    您的浏览器不支持音频元素。
+                                </audio>
+                                <div class="dropdown">
+                                    <button class="dropdown-btn">附带文档</button>
+                                    <div class="dropdown-content">
+01
+我很庆幸生活在这样一个信息时代:无论是伊凡四世还是嘉靖帝都要为之赞叹！历史的车轮正在疾驶，像是要把所有人都落在身后。坐在轻轨列车上俯瞰这个生我养我的小镇，很难不感慨时光匆匆；昔日的土坡被推平了，土坡上铺起来遮土网，长出一座座楼……不知是从何时开始，那座塔就屹立在那里了。它是做什么用的？八角外形，土黄色的结构，与这座镇格格不入，为什么没有人提起过它？
+轻轨前行，移步换景，轻轨的车轮正在疾驶，所有思绪都落在身后。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="track-list">
+                        <div class="track">
+                            <h4 class="track-title">2. AeroMusic</h4>
+                            <div class="player-container">
+                                <audio controls controlsList="nodownload">
+                                    <source src="普斯科夫城/AeroMusic.wav" type="audio/mpeg">
+                                    您的浏览器不支持音频元素。
+                                </audio>
+                                <div class="dropdown">
+                                    <button class="dropdown-btn">附带文档</button>
+                                    <div class="dropdown-content">
+02
+于是在那天傍晚，我骑车向塔的方向驶去。三四月份的春风吹响心中的风铃。随着高楼逐渐消失在身后，荒僻重新取代吊起的钢筋，塔也突然揭示在我眼前。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="track-list">
+                        <div class="track">
+                            <h4 class="track-title">3. 落幕回廊</h4>
+                            <div class="player-container">
+                                <audio controls controlsList="nodownload">
+                                    <source src="普斯科夫城/落幕回廊.wav" type="audio/mpeg">
+                                    您的浏览器不支持音频元素。
+                                </audio>
+                                <div class="dropdown">
+                                    <button class="dropdown-btn">附带文档</button>
+                                    <div class="dropdown-content">
+03
+太阳落幕了。我恰好在第一颗星星升起的时候抵达。走上石阶，那座塔就建在石阶组成的四棱台的中心。那座高塔是如此威严……心跳成为了底鼓，风成为了永不停止的弦乐，塔尖似乎共振起来，于是我的意识逐渐被截断。
+没有人记得的历史。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="track-list">
+                        <div class="track">
+                            <h4 class="track-title">4. 普斯科夫城</h4>
+                            <div class="player-container">
+                                <audio controls controlsList="nodownload">
+                                    <source src="普斯科夫城/普斯科夫城.wav" type="audio/mpeg">
+                                    您的浏览器不支持音频元素。
+                                </audio>
+                                <div class="dropdown">
+                                    <button class="dropdown-btn">附带文档</button>
+                                    <div class="dropdown-content">
+04
+在数百数千年前，欧亚大陆的另一面，就已经坐落着普斯科夫城。它曾有着悠久辉煌的历史：如今城中的大教堂和修道院以及它们内部的圣像，数以百计的木舍，还有山岬上的克里姆林都无一不证明着这一点。无数个被火炬照亮的深邃夜晚，最终变成了21世纪平凡的城市灯光。当新的文化彻底与以前的文化独立时，原有的普斯科夫成为了纪念碑。
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                     <div class="track-list">
+                        <div class="track">
+                            <h4 class="track-title">5. 亚麻籽</h4>
+                            <div class="player-container">
+                                <audio controls controlsList="nodownload">
+                                    <source src="普斯科夫城/亚麻籽.wav" type="audio/mpeg">
+                                    您的浏览器不支持音频元素。
+                                </audio>
+                                <div class="dropdown">
+                                    <button class="dropdown-btn">附带文档</button>
+                                    <div class="dropdown-content">
+05
+塔成为了一座纪念碑。
+有人知道塔是作什么用的，可是他并没有理由将其公之于众。
+我从梦中惊醒，走到塔的背后，四周一片黑暗。一座石碑立在这里。字迹已辨认不清。
+城市灯光已消失不见，取而代之的是千百年前的银河。星星像一颗颗麦子撒在天空，又像一颗颗普斯科夫的亚麻籽。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 专辑页面 -->
+    <div id="albums" class="page">
+        <div class="border-style">
+            <!-- 最新专辑预览 -->
+            <div class="album-section">
+                <h2 style="text-align: center; color: #8B4513;">◆ 专辑一览 ◆</h2>
+                <div class="album">
+                    <div class="album-header">
+                        <img src="普斯科夫城/普斯科夫城.jpg" alt="普斯科夫城" class="album-cover">
+                        <div class="album-info">
+                            <h3 class="album-title">普斯科夫城</h3>
+                            <div class="album-meta">发行日期：2025年5月3日</div>
+                            <div class="album-meta">完成情况：未完成</div>
+                            <div class="album-meta">曲目数量：5首</div>
+                            <div class="album-meta">宿主：库乐队</div>
+                        </div>
+                    </div>
+
+                    <div class="track-list">
+                        <div class="track">
+                            <h4 class="track-title">1. 律动</h4>
+                            <div class="player-container">
+                                <audio controls controlsList="nodownload">
+                                    <source src="普斯科夫城/律动.wav" type="audio/mpeg">
+                                    您的浏览器不支持音频元素。
+                                </audio>
+                                <div class="dropdown">
+                                    <button class="dropdown-btn">附带文档</button>
+                                    <div class="dropdown-content">
+01
+我很庆幸生活在这样一个信息时代:无论是伊凡四世还是嘉靖帝都要为之赞叹！历史的车轮正在疾驶，像是要把所有人都落在身后。坐在轻轨列车上俯瞰这个生我养我的小镇，很难不感慨时光匆匆；昔日的土坡被推平了，土坡上铺起来遮土网，长出一座座楼……不知是从何时开始，那座塔就屹立在那里了。它是做什么用的？八角外形，土黄色的结构，与这座镇格格不入，为什么没有人提起过它？
+轻轨前行，移步换景，轻轨的车轮正在疾驶，所有思绪都落在身后。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="track-list">
+                        <div class="track">
+                            <h4 class="track-title">2. AeroMusic</h4>
+                            <div class="player-container">
+                                <audio controls controlsList="nodownload">
+                                    <source src="普斯科夫城/AeroMusic.wav" type="audio/mpeg">
+                                    您的浏览器不支持音频元素。
+                                </audio>
+                                <div class="dropdown">
+                                    <button class="dropdown-btn">附带文档</button>
+                                    <div class="dropdown-content">
+02
+于是在那天傍晚，我骑车向塔的方向驶去。三四月份的春风吹响心中的风铃。随着高楼逐渐消失在身后，荒僻重新取代吊起的钢筋，塔也突然揭示在我眼前。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="track-list">
+                        <div class="track">
+                            <h4 class="track-title">3. 落幕回廊</h4>
+                            <div class="player-container">
+                                <audio controls controlsList="nodownload">
+                                    <source src="普斯科夫城/落幕回廊.wav" type="audio/mpeg">
+                                    您的浏览器不支持音频元素。
+                                </audio>
+                                <div class="dropdown">
+                                    <button class="dropdown-btn">附带文档</button>
+                                    <div class="dropdown-content">
+03
+太阳落幕了。我恰好在第一颗星星升起的时候抵达。走上石阶，那座塔就建在石阶组成的四棱台的中心。那座高塔是如此威严……心跳成为了底鼓，风成为了永不停止的弦乐，塔尖似乎共振起来，于是我的意识逐渐被截断。
+没有人记得的历史。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="track-list">
+                        <div class="track">
+                            <h4 class="track-title">4. 普斯科夫城</h4>
+                            <div class="player-container">
+                                <audio controls controlsList="nodownload">
+                                    <source src="普斯科夫城/普斯科夫城.wav" type="audio/mpeg">
+                                    您的浏览器不支持音频元素。
+                                </audio>
+                                <div class="dropdown">
+                                    <button class="dropdown-btn">附带文档</button>
+                                    <div class="dropdown-content">
+04
+在数百数千年前，欧亚大陆的另一面，就已经坐落着普斯科夫城。它曾有着悠久辉煌的历史：如今城中的大教堂和修道院以及它们内部的圣像，数以百计的木舍，还有山岬上的克里姆林都无一不证明着这一点。无数个被火炬照亮的深邃夜晚，最终变成了21世纪平凡的城市灯光。当新的文化彻底与以前的文化独立时，原有的普斯科夫成为了纪念碑。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                     <div class="track-list">
+                        <div class="track">
+                            <h4 class="track-title">5. 亚麻籽</h4>
+                            <div class="player-container">
+                                <audio controls controlsList="nodownload">
+                                    <source src="普斯科夫城/亚麻籽.wav" type="audio/mpeg">
+                                    您的浏览器不支持音频元素。
+                                </audio>
+                                <div class="dropdown">
+                                    <button class="dropdown-btn">附带文档</button>
+                                    <div class="dropdown-content">
+05
+塔成为了一座纪念碑。
+有人知道塔是作什么用的，可是他并没有理由将其公之于众。
+我从梦中惊醒，走到塔的背后，四周一片黑暗。一座石碑立在这里。字迹已辨认不清。
+城市灯光已消失不见，取而代之的是千百年前的银河。星星像一颗颗麦子撒在天空，又像一颗颗普斯科夫的亚麻籽。
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="album">
+                    <div class="album-header">
+                        <img src="夜和丙戊酸镁/夜和丙戊酸镁.jpg" alt="夜和丙戊酸镁" class="album-cover">
+                        <div class="album-info">
+                            <h3 class="album-title">夜和丙戊酸镁</h3>
+                            <div class="album-meta">发行日期：2024年11月16日</div>
+                            <div class="album-meta">完成情况：已完成</div>
+                            <div class="album-meta">曲目数量：8首</div>
+                            <div class="album-meta">宿主：库乐队</div>
+                        </div>
+                    </div>
+
+                    <div class="track-list">
+                        <div class="track">
+                            <h4 class="track-title">1. 夜和丙戊酸镁</h4>
+                            <div class="player-container">
+                                <audio controls controlsList="nodownload">
+                                    <source src="夜和丙戊酸镁/夜和丙戊酸镁.wav" type="audio/mpeg">
+                                    您的浏览器不支持音频元素。
+                                </audio>
+                                <div class="dropdown">
+                                    <button class="dropdown-btn">附带文档</button>
+                                    <div class="dropdown-content">
+                                        这里是"夜和丙戊酸镁"的附带文档内容...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="track-list">
+                        <div class="track">
+                            <h4 class="track-title">2. Sweet Fantasies......</h4>
+                            <div class="player-container">
+                                <audio controls controlsList="nodownload">
+                                    <source src="夜和丙戊酸镁/Sweet Fantasies.......wav" type="audio/mpeg">
+                                    您的浏览器不支持音频元素。
+                                </audio>
+                                <div class="dropdown">
+                                    <button class="dropdown-btn">附带文档</button>
+                                    <div class="dropdown-content">
+                                        这里是"Sweet Fantasies......"的附带文档内容...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="track-list">
+                        <div class="track">
+                            <h4 class="track-title">3. 未眠~Inspiring Night.</h4>
+                            <div class="player-container">
+                                <audio controls controlsList="nodownload">
+                                    <source src="夜和丙戊酸镁/未眠~Inspiring Night..wav" type="audio/mpeg">
+                                    您的浏览器不支持音频元素。
+                                </audio>
+                                <div class="dropdown">
+                                    <button class="dropdown-btn">附带文档</button>
+                                    <div class="dropdown-content">
+                                        这里是"未眠~Inspiring Night."的附带文档内容...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                     <div class="track-list">
+                        <div class="track">
+                            <h4 class="track-title">4. 7590</h4>
+                            <div class="player-container">
+                                <audio controls controlsList="nodownload">
+                                    <source src="夜和丙戊酸镁/7590.wav" type="audio/mpeg">
+                                    您的浏览器不支持音频元素。
+                                </audio>
+                                <div class="dropdown">
+                                    <button class="dropdown-btn">附带文档</button>
+                                    <div class="dropdown-content">
+                                        这里是"7590"的附带文档内容...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="track-list">
+                        <div class="track">
+                            <h4 class="track-title">5. 7925</h4>
+                            <div class="player-container">
+                                <audio controls controlsList="nodownload">
+                                    <source src="夜和丙戊酸镁/7925.wav" type="audio/mpeg">
+                                    您的浏览器不支持音频元素。
+                                </audio>
+                                <div class="dropdown">
+                                    <button class="dropdown-btn">附带文档</button>
+                                    <div class="dropdown-content">
+                                        这里是"7925"的附带文档内容...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="track-list">
+                        <div class="track">
+                            <h4 class="track-title">6. 有失有得~I Gain What?</h4>
+                            <div class="player-container">
+                                <audio controls controlsList="nodownload">
+                                    <source src="夜和丙戊酸镁/有失有得.wav" type="audio/mpeg">
+                                    您的浏览器不支持音频元素。
+                                </audio>
+                                <div class="dropdown">
+                                    <button class="dropdown-btn">附带文档</button>
+                                    <div class="dropdown-content">
+                                        这里是"有失有得~I Gain What?"的附带文档内容...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="track-list">
+                        <div class="track">
+                            <h4 class="track-title">7. 虚位以待</h4>
+                            <div class="player-container">
+                                <audio controls controlsList="nodownload">
+                                    <source src="夜和丙戊酸镁/虚位以待.wav" type="audio/mpeg">
+                                    您的浏览器不支持音频元素。
+                                </audio>
+                                <div class="dropdown">
+                                    <button class="dropdown-btn">附带文档</button>
+                                    <div class="dropdown-content">
+                                        这里是"虚位以待"的附带文档内容...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="track-list">
+                        <div class="track">
+                            <h4 class="track-title">8. 永远的依靠</h4>
+                            <div class="player-container">
+                                <audio controls controlsList="nodownload">
+                                    <source src="夜和丙戊酸镁/永远的依靠.wav" type="audio/mpeg">
+                                    您的浏览器不支持音频元素。
+                                </audio>
+                                <div class="dropdown">
+                                    <button class="dropdown-btn">附带文档</button>
+                                    <div class="dropdown-content">
+                                        这里是"永远的依靠"的附带文档内容...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 附录页面 -->
+    <div id="appendix" class="page">
+        <div class="border-style">
+            <h2 style="text-align: center; color: #8B4513;">◆ 附录 ◆</h2>
+
+            <div class="appendix-content">
+                <p>欢迎各位来到7925音乐站。</p>
+
+                <p>这个网站是DeepSeek生成的，内容和文案在此基础上被我修改，未来会收录从2021年以来我创作的音乐作品。</p>
+
+                <p>网站会不定期更新新的作品。如果您对我的音乐有任何建议或感想，欢迎通过附录页的联系方式与我交流。</p>
+
+                <p>微信:Sasasegawa_Sasami</p>
+
+                <p style="text-align: right; margin-top: 30px;">
+                    <span style="display: block;">7925音乐站 站长</span>
+                    <span style="display: block;">7925</span>
+                    <span style="display: block;">2025年5月</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="border-style">
+        <p>© 2025 7925音乐站</p>
+        <p>www.7925musicroom.com</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // 页面切换功能
+        document.addEventListener('DOMContentLoaded', function() {
+            // 导航链接点击事件
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    // 移除所有活动页面的active类
+                    document.querySelectorAll('.page').forEach(page => {
+                        page.classList.remove('active');
+                    });
+
+                    // 添加active类到目标页面
+                    const targetPage = this.getAttribute('data-page');
+                    document.getElementById(targetPage).classList.add('active');
+
+                    // 滚动到顶部
+                    window.scrollTo(0, 0);
+                });
+            });
+
+            // 移动端音频后台播放支持
+            const audioElements = document.querySelectorAll('audio');
+
+            // 确保音频可以在移动设备上后台播放
+            document.addEventListener('click', function() {
+                audioElements.forEach(audio => {
+                    if (audio.paused) {
+                        audio.play().then(() => audio.pause()).catch(() => {});
+                    }
+                });
+            }, { once: true });
+
+            // 暂停其他音频当一个新的开始播放
+            audioElements.forEach(audio => {
+                audio.addEventListener('play', function() {
+                    audioElements.forEach(otherAudio => {
+                        if (otherAudio !== audio && !otherAudio.paused) {
+                            otherAudio.pause();
+                        }
+                    });
+                });
+            });
+
+            // 点击附带文档按钮切换显示和隐藏
+            document.querySelectorAll('.dropdown-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    if (content.style.display === 'block') {
+                        content.style.display = 'none';
+                    } else {
+                        content.style.display = 'block';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
